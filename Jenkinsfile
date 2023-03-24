@@ -3,28 +3,28 @@ pipeline
     agent any
     stages
     {
-        stage('Continous Download')
+        stage('Cont_Download')
         {
             steps
             {
                 git 'https://github.com/imrans297/Maven.git'
             }
         }
-        stage('Continous Build')
+        stage('Cont_Build')
         {
             steps
             {
                 sh 'mvn package'
             }
         }
-        stage('Continous Deployment')
+        stage('Cont_Deployment')
         {
             steps
             {
-                sh 'scp /var/lib/jenkins/workspace/DeclerativePipeline1/webapp/target/webapp.war ubuntu@172.31.55.197:/var/lib/tomcat9/webapps/testing.war'
+                sh 'scp /var/lib/jenkins/workspace/DeclerativePipeline1/webapp/target/webapp.war ubuntu@172.31.12.103:/var/lib/tomcat9/webapps/testapp.war'
             }
         }
-        stage('Continous Testing')
+        stage(COnt_Testing)
         {
             steps
             {
@@ -32,12 +32,11 @@ pipeline
                 sh 'java -jar /var/lib/jenkins/workspace/DeclerativePipeline1/testing.jar'
             }
         }
-        stage('Continous Delivery')
+        stage(Cont_Delivery)
         {
             steps
             {
-                input message: 'Need Approval from DM', submitter: 'hari'
-                sh 'scp /var/lib/jenkins/workspace/DeclerativePipeline1/webapp/target/webapp.war ubuntu@172.31.56.216:/var/lib/tomcat9/webapps/prodapp.war'
+                sh 'scp /var/lib/jenkins/workspace/DeclerativePipeline1/webapp/target/webapp.war ubuntu@172.31.6.120:/var/lib/tomcat9/webapps/prodapp.war'
             }
         }
     }
