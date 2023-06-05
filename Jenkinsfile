@@ -3,41 +3,46 @@ pipeline
     agent any
     stages
     {
-        stage('Cont_Download')
+        stage("Cont_download")
         {
             steps
             {
-                git 'https://github.com/imrans297/Maven.git'
+                git 'https://github.com/intelliqittrainings/maven.git'
             }
         }
-        stage('Cont_Build')
+        stage("Cont_Build")
         {
             steps
             {
-                sh 'mvn package'
+                sh 'mvn package' 
             }
         }
-        stage('Cont_Deployment')
+        stage("Con_deployment")
         {
             steps
             {
-                sh 'scp /var/lib/jenkins/workspace/DeclerativePipeline1/webapp/target/webapp.war ubuntu@172.31.12.103:/var/lib/tomcat9/webapps/testapp.war'
-            }
+                sh 'scp /var/lib/jenkins/workspace/Development/webapp/target/webapp.war ubuntu@172.31.31.171:/var/lib/tomcat9/webapps/testapp.war'
+            } 
         }
-        stage(COnt_Testing)
+        stage("Cont_Tessting")
         {
             steps
             {
                 git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
-                sh 'java -jar /var/lib/jenkins/workspace/DeclerativePipeline1/testing.jar'
+                sh 'java -jar /var/lib/jenkins/workspace/Development/testing.jar'
             }
         }
-        stage(Cont_Delivery)
+    }    
+    post
+    {
+        success
         {
-            steps
-            {
-                sh 'scp /var/lib/jenkins/workspace/DeclerativePipeline1/webapp/target/webapp.war ubuntu@172.31.6.120:/var/lib/tomcat9/webapps/prodapp.war'
-            }
+            input message: 'Need Approval OFz DM', ok: 'OK', submitter: 'Harish'
+            sh 'scp /var/lib/jenkins/workspace/Development/webapp/target/webapp.war ubuntu@172.31.26.241:/var/lib/tomcat9/webapps/prodapp.war'
+        }
+        failure
+        {
+            mail bcc: '', body: 'the jenkins CI-CD fails look into it as soon as possible', cc: '', from: '', replyTo: '', subject: 'in Jenkns Prod stage got failure look into it', to: 'imrans-prodteam@ms.com'
         }
     }
 }
